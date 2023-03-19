@@ -48,7 +48,8 @@ sed -e 's|Environment=PGDATA=/var/lib/pgsql/15/data/|Environment=PGDATA=/pgsql/1
 
 
 # initialize the database and enable automatic start:
-sudo /usr/pgsql-15/bin/postgresql-15-setup initdb
+# add the customize encoding for db
+sudo /usr/pgsql-15/bin/postgresql-15-setup initdb -k --encoding=UTF-8 --locale=en_US.UTF-8  
 sudo systemctl enable postgresql-15
 sudo systemctl start postgresql-15
 
