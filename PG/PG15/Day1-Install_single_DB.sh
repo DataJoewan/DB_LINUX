@@ -1,7 +1,7 @@
 #!/bin/bash
 # https://github.com/joe-wan-cn/IT-infra/blob/main/Vagrant/Day1-create_single_boxes.md 
 # simple script for vagrant to call this script to setup the PG15 single DB  <<< applicable for vagrant environment only
-
+# https://doc.castsoftware.com/display/STORAGE/PostgreSQL+10+or+above+deployment+on+Linux 
 # Put the commands inside here
 # run with root only 
 
@@ -59,7 +59,10 @@ sed -e 's|Environment=PGDATA=/var/lib/pgsql/15/data/|Environment=PGDATA=/pgsql/1
 
 #must be run with root meanwhile ensure **/pgsql/15/data/** the is empty 
 
-PGSETUP_INITDB_OPTIONS="-E UTF-8" /usr/pgsql-15/bin/postgresql-15-setup initdb
+PGSETUP_INITDB_OPTIONS="-E UTF-8  --no-locale" /usr/pgsql-15/bin/postgresql-15-setup initdb
+# or as a workaround with 
+# export PGSETUP_INITDB_OPTIONS="-E 'UTF-8' --no-locale"
+# /usr/pgsql-<name>/bin/postgresql-<name>-setup initdb
 
 #sed -e 's|#unix_socket_directories|unix_socket_directories|g' -i.bak /pgsql/15/data/postgresql.conf
 
