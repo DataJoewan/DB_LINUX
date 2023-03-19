@@ -3,7 +3,7 @@
 # simple script for vagrant to call this script to setup the PG15 single DB  <<< applicable for vagrant environment only
 
 # Put the commands inside here
-
+# run with root only 
 
 #update the timezone 
 #timedatectl set-timezone Asia/Shanghai	
@@ -57,12 +57,11 @@ sed -e 's|Environment=PGDATA=/var/lib/pgsql/15/data/|Environment=PGDATA=/pgsql/1
 # initialize the database and enable automatic start:
 # add the customize encoding for db
 
-# must be run with root
-/usr/pgsql-15/bin/postgresql-15-setup initdb  
-cp /usr/pgsql-15/share/postgresql.conf.sample  /pgsql/15/data/postgresql.conf
+#must be run with root meanwhile ensure **/pgsql/15/data/** the is empty 
 
-sed -e 's|#unix_socket_directories|unix_socket_directories|g' -i.bak /pgsql/15/data/postgresql.conf
- 
+PGSETUP_INITDB_OPTIONS="-E UTF-8" /usr/pgsql-15/bin/postgresql-15-setup initdb
+
+#sed -e 's|#unix_socket_directories|unix_socket_directories|g' -i.bak /pgsql/15/data/postgresql.conf
 
 systemctl enable postgresql-15
 systemctl start postgresql-15
