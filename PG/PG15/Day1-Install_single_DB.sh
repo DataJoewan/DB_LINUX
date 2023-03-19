@@ -33,24 +33,34 @@ dnf -qy module disable postgresql
 # Install PostgreSQL:
 dnf install -y postgresql15-server
 
+# Change the location for postgres
+mkdir /home/postgres
+chmod 700 /home/postgres
+chown postgres:postgres /home/postgres
+usermod postgres -d /home/postgres
+
 # Place the data into special folder but not the default one 
 mkdir -p /pgsql/15/{data,dump,dba,backup}
 chown -R postgres:postgres /pgsql
 chmod -R 700 /pgsql 
 echo "export PATH=/usr/pgsql-15/bin:$PATH">> /etc/profile
  
-echo "export PGHOME=/pgsql/15" >> /var/lib/pgsql/.bash_profile
-echo "export PGDATA=/pgsql/15/data " >> /var/lib/pgsql/.bash_profile
-echo "export PGDUMP=/pgsql/15/dump  " >> /var/lib/pgsql/.bash_profile
-echo "export PGBACKUP=/pgsql/15/backup " >> /var/lib/pgsql/.bash_profile
+echo "export PGHOME=/pgsql/15" >> /home/postgres/.bash_profile
+echo "export PGDATA=/pgsql/15/data " >> /home/postgres/.bash_profile
+echo "export PGDUMP=/pgsql/15/dump  " >> /home/postgres/.bash_profile
+echo "export PGBACKUP=/pgsql/15/backup " >> /home/postgres/.bash_profile
+
 
 sed -e 's|Environment=PGDATA=/var/lib/pgsql/15/data/|Environment=PGDATA=/pgsql/15/data/|g' -i.bak /usr/lib/systemd/system/postgresql-15.service
 
 
 # initialize the database and enable automatic start:
 # add the customize encoding for db
-sudo /usr/pgsql-15/bin/postgresql-15-setup initdb -k --encoding=UTF-8 --locale=en_US.UTF-8  
-sudo systemctl enable postgresql-15
-sudo systemctl start postgresql-15
+
+su - postgres
+/usr/pgsql-15/bin/postgresql-15-setup initdb   
+systemctl enable postgresql-15
+systemctl start postgresql-15
+
 
 
